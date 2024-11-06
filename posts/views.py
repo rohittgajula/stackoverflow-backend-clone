@@ -367,7 +367,7 @@ def create_tag(request):
     else:
         return Response({
             'status':status.HTTP_400_BAD_REQUEST,
-            'message':'Validarion error',
+            'message':'Validation error',
             'error':serializer.errors
         }, status.HTTP_400_BAD_REQUEST)
 
