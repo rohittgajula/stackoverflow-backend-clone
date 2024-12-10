@@ -13,7 +13,7 @@ from .serializers import ( TagSerializer, CreateQuestionSerializer,
                           DetailQuestionView )
 
 from .pagination import CustomPagination
-from .tasks import send_answer_notfication_mail
+from .tasks import send_answer_notification_mail
 from .helper import handle_not_found
 
 from django.core.cache import cache
@@ -21,7 +21,10 @@ from django.views.decorators.csrf import csrf_exempt
 
 import hashlib
 
+from drf_yasg.utils import swagger_auto_schema
 
+
+@swagger_auto_schema(method='POST', request_body=CreateAnswerSerializer)
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def create_answer_for_question(request, question_id):
@@ -32,7 +35,7 @@ def create_answer_for_question(request, question_id):
     serializer = CreateAnswerSerializer(data=data)
     if serializer.is_valid():
         serializer.save(created_user=user, question=question)
-        send_answer_notfication_mail.apply_async((question.created_user.email, question.question_title), countdown=90)
+        send_answer_notification_mail.apply_async((question.created_user.email, question.question_title), countdown=90)
         return Response({
             'status':status.HTTP_201_CREATED,
             'message':f'Answer created for - {question.question_title}',
@@ -77,6 +80,8 @@ def get_answers_for_question(request, question_id):
         'data':serializer.data
     }, status.HTTP_200_OK)
 
+
+@swagger_auto_schema(method='PATCH', request_body=CreateAnswerSerializer)
 @api_view(['PATCH'])
 @permission_classes([IsAuthenticated])
 def update_answer(request, answer_id):
@@ -189,6 +194,7 @@ def detail_question_view(request, question_id):
     }, status.HTTP_200_OK)
 
 
+@swagger_auto_schema(method='POST', request_body=CreateQuestionSerializer)
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def create_question(request):
@@ -214,6 +220,7 @@ def create_question(request):
         }, status.HTTP_400_BAD_REQUEST)
 
 
+@swagger_auto_schema(method='PATCH', request_body=CreateQuestionSerializer)
 @api_view(['PATCH'])
 @permission_classes([IsAuthenticated])
 def update_question(request, question_id):
@@ -233,7 +240,7 @@ def update_question(request, question_id):
         serializer.save()
         return Response({
             'status':status.HTTP_202_ACCEPTED,
-            'message':'Question update successfull.',
+            'message':'Question update successful.',
             'data':serializer.data
         }, status.HTTP_202_ACCEPTED)
     else:
@@ -266,10 +273,11 @@ def delete_question(request, question_id):
         cache.delete('all_questions')
         return Response({
             'status':status.HTTP_200_OK,
-            'message':'Question deleted sucessfully.',
+            'message':'Question deleted successfully.',
         }, status.HTTP_200_OK)
     
 
+@swagger_auto_schema(method='POST', request_body=CreateCommentSerializer)
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def create_comment_for_question(request, question_id):
@@ -285,7 +293,7 @@ def create_comment_for_question(request, question_id):
 
         return Response({
             'status':status.HTTP_200_OK,
-            'message':'Comment created sucessfully.',
+            'message':'Comment created successfully.',
             'data':serializer.data
         }, status.HTTP_200_OK)
     else:
@@ -296,6 +304,7 @@ def create_comment_for_question(request, question_id):
         }, status.HTTP_400_BAD_REQUEST)
     
 
+@swagger_auto_schema(method='POST', request_body=CreateCommentSerializer)
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def create_comment_for_answer(request, answer_id):
@@ -311,7 +320,7 @@ def create_comment_for_answer(request, answer_id):
 
         return Response({
             'status':status.HTTP_200_OK,
-            'message':'Comment created sucessfully.',
+            'message':'Comment created successfully.',
             'data':serializer.data
         }, status.HTTP_200_OK)
     else:
@@ -347,11 +356,11 @@ def delete_comment(request, comment_id):
 
     return Response({
         'status':status.HTTP_200_OK,
-        'message':'Comment deleted sucessfully',
+        'message':'Comment deleted successfully',
     }, status.HTTP_200_OK)
     
 
-
+@swagger_auto_schema(method='POST', request_body=TagSerializer)
 @api_view(['POST'])
 @permission_classes([IsAdminUser])
 def create_tag(request):
@@ -393,6 +402,7 @@ def all_tags(request):
         'message':'All tags.',
         'data':serializer.data
     }, status.HTTP_200_OK)
+
 
 @api_view(['DELETE'])
 @permission_classes([IsAdminUser])

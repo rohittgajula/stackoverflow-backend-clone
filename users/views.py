@@ -14,6 +14,8 @@ from django.core.cache import cache
 
 from django.db import transaction
 
+from drf_yasg.utils import swagger_auto_schema
+
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
@@ -48,6 +50,7 @@ def all_users(request):
         'users':result_page
     })
 
+@swagger_auto_schema(method='POST', request_body=CreateUpdateSerializer)
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def create_user(request):
@@ -67,7 +70,7 @@ def create_user(request):
             'error':serializer.errors
         }, status.HTTP_400_BAD_REQUEST)
     
-    
+@swagger_auto_schema(method='POST', request_body=VerifyEmailSerializer)
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def verify_otp(request):
@@ -96,7 +99,8 @@ def verify_otp(request):
             'error':serializer.errors
         }, status.HTTP_400_BAD_REQUEST)
     
-    
+
+@swagger_auto_schema(method='PATCH', request_body=CreateUpdateSerializer)
 @api_view(['PATCH'])
 def update_user(request, pk):
     user = get_object_or_404(User, id=pk)

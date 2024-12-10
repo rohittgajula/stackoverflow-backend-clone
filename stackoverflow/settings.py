@@ -43,6 +43,8 @@ INSTALLED_APPS = [
     "django_celery_results",
     "rest_framework_simplejwt",
     "posts",
+    'django.contrib.staticfiles',
+    'drf_yasg',
 ]
 
 
@@ -73,6 +75,9 @@ REST_FRAMEWORK = {
     ],
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+    'DEFAULT_SCHEMA_CLASS': (
+        'rest_framework.schemas.coreapi.AutoSchema'
     )
 }
 
@@ -178,3 +183,19 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+SIMPLE_JWT = {
+    'AUTH_HEADER_TYPES': ('Bearer', ),
+}
+
+SWAGGER_SETTINGS = {
+    'SECURITY_DEFINITIONS': {
+        'api_key': {
+            'type': 'apiKey',
+            'in':'header',
+            'name':'Authorization'
+        }
+    },
+}
+
+CSRF_COOKIE_NAME = "csrftoken"
