@@ -13,6 +13,8 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 from pathlib import Path
 from datetime import timedelta
 
+import os
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -43,7 +45,6 @@ INSTALLED_APPS = [
     "django_celery_results",
     "rest_framework_simplejwt",
     "posts",
-    'django.contrib.staticfiles',
     'drf_yasg',
 ]
 
@@ -79,16 +80,6 @@ REST_FRAMEWORK = {
     'DEFAULT_SCHEMA_CLASS': (
         'rest_framework.schemas.coreapi.AutoSchema'
     )
-}
-
-CACHES = {
-    'default': {
-        'BACKEND': 'django_redis.cache.RedisCache',
-        'LOCATION': 'redis://redis:6379/0',
-        'OPTIONS': {
-            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
-        }
-    }
 }
 
 SIMPLE_JWT = {
@@ -199,3 +190,35 @@ SWAGGER_SETTINGS = {
 }
 
 CSRF_COOKIE_NAME = "csrftoken"
+
+
+
+
+
+
+
+def get_redis_cache_config():
+
+    if os.getenv('IS_DOCKER') == 'true':
+        return {
+            'default': {
+                'BACKEND': 'django_redis.cache.RedisCache',
+                'LOCATION': 'redis://redis:6379/0',  # Redis container name is 'redis' in Docker
+                'OPTIONS': {
+                    'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+                }
+            }
+        }
+    else:
+        return {
+            'default': {
+                'BACKEND': 'django_redis.cache.RedisCache',
+                'LOCATION': 'redis://127.0.0.1:6379/1',  # Localhost Redis
+                'OPTIONS': {
+                    'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+                }
+            }
+        }
+    
+CACHES = get_redis_cache_config()
+

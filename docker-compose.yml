@@ -21,6 +21,9 @@ services:
   web:
     build: .
     container_name: web-stack
+    environment:
+    # to check server running through docker or localhost
+      - IS_DOCKER=true            
     volumes:
       - .:/app
     ports:
