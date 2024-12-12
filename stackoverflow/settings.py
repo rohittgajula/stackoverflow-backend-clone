@@ -26,10 +26,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv('SECRET_KEY')
+SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-9^fcwjpr00ps5_cbws&ap@pcj1p5c!(j*(qm=tzdpbp1mrv3&k')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv('DEBUG')
+DEBUG = os.getenv('DEBUG', 'False')
 
 ALLOWED_HOSTS = []
 
@@ -58,7 +58,7 @@ AUTH_USER_MODEL = 'users.User'
 
 CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
 
-CELERY_BROKER_URL = 'redis://redis:6379/0'  # or use your Redis URL
+CELERY_BROKER_URL = os.getenv('CELERY_BROKER_URL', 'redis://127.0.0.1:6379/0')
 CELERY_RESULT_BACKEND = 'django-db'
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
@@ -196,10 +196,6 @@ CSRF_COOKIE_NAME = "csrftoken"
 
 
 
-
-
-
-
 def get_redis_cache_config():
 
     if os.getenv('IS_DOCKER') == 'true':
@@ -216,7 +212,7 @@ def get_redis_cache_config():
         return {
             'default': {
                 'BACKEND': 'django_redis.cache.RedisCache',
-                'LOCATION': 'redis://127.0.0.1:6379/1',  # Localhost Redis
+                'LOCATION': 'redis://127.0.0.1:6379/0',  # Localhost Redis
                 'OPTIONS': {
                     'CLIENT_CLASS': 'django_redis.client.DefaultClient',
                 }
