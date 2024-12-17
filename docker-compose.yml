@@ -3,13 +3,11 @@ version: '3.11'
 services:
   redis:
     image: redis:7
-    container_name: redis-stack
     ports:
       - "6379:6379"
 
   celery:
     build: .
-    container_name: celery-worker
     command: ["celery", "-A", "stackoverflow", "worker", "-l", "INFO"]
     depends_on:
       - redis
@@ -18,9 +16,22 @@ services:
       - CELERY_BROKER_URL=redis://redis:6379/0
       - CELERY_RESULT_BACKEND=redis://redis:6379/0
 
+  db:
+    image: postgres:latest
+    restart: always
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    env_file:
+      - .env
+
   web:
     build: .
-    container_name: web-stack
     environment:
     # to check server running through docker or localhost
       - IS_DOCKER=true            
@@ -30,10 +41,12 @@ services:
       - "8000:8000"
     depends_on:
       - redis
+      - db
     command: >
       sh -c "pip install -r requirements.txt &&
              python3 manage.py makemigrations &&
              python3 manage.py migrate &&
              python3 manage.py runserver 0.0.0.0:8000"
 
-
+volumes:
+  postgres_data:
