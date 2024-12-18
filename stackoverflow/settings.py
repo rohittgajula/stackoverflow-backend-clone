@@ -33,6 +33,7 @@ DEBUG = os.getenv('DEBUG', 'False')
 
 ALLOWED_HOSTS = []
 
+CORS_ALLOW_ALL_ORIGINS = True
 
 # Application definition
 
@@ -75,14 +76,14 @@ EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
+        'rest_framework.permissions.IsAuthenticated'
     ],
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
     'DEFAULT_SCHEMA_CLASS': (
         'rest_framework.schemas.coreapi.AutoSchema'
-    )
+    ),
 }
 
 SIMPLE_JWT = {
@@ -91,6 +92,7 @@ SIMPLE_JWT = {
     "ROTATE_REFRESH_TOKENS": False,
     "BLACKLIST_AFTER_ROTATION": True,
     "UPDATE_LAST_LOGIN": False,
+    "AUTH_HEADER_TYPES": ('Bearer', ),
 }
 
 # --------------------------------------------------------------------------------------------------
@@ -188,10 +190,10 @@ SIMPLE_JWT = {
 
 SWAGGER_SETTINGS = {
     'SECURITY_DEFINITIONS': {
-        'api_key': {
+        'Bearer': {
             'type': 'apiKey',
+            'name':'Authorization',
             'in':'header',
-            'name':'Authorization'
         }
     },
 }
