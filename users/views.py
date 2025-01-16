@@ -143,7 +143,7 @@ def delete_user(request, pk):
     user.delete()
     return Response({
         'status':200,
-        'data':f'{user.email} deleted sucessfully.'
+        'data':f'{user.email} deleted successfully.'
     }, status.HTTP_200_OK)
 
 

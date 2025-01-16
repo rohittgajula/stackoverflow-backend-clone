@@ -48,13 +48,6 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(default=True)
     is_superuser = models.BooleanField(default=False)
 
-    # def save(self, *args, **kwargs):
-    #     if self.date_of_birth:
-    #         today = date.today()
-    #         self.age = today.year - self.date_of_birth.year - ((today.month, today.day) < (self.date_of_birth.month, self.date_of_birth.day))
-    #     else:
-    #         self.age = None
-    #     super().save(*args, **kwargs)
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ['first_name', 'last_name', 'username']

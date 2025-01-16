@@ -131,13 +131,16 @@ WSGI_APPLICATION = 'stackoverflow.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
+def get_database_host():
+    return 'db' if os.getenv('IS_DOCKER', 'false').lower() == 'true' else '127.0.0.1'
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': os.getenv('POSTGRES_DB', 'stackoverflow'),
         'USER': os.getenv('POSTGRES_USER', 'postgres'),
         'PASSWORD': os.getenv('POSTGRES_PASSWORD', '2710'),
-        'HOST': os.getenv('POSTGRES_HOST', 'db'),
+        'HOST': get_database_host(),     # use 'db' when running on docker & '127.0.0.1' for local server
         'PORT': os.getenv('POSTGRES_PORT', '5432'),
     }
 }
