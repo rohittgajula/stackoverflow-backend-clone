@@ -1,0 +1,43 @@
+.
+├── Dockerfile
+├── docker-compose.yml
+├── manage.py
+├── posts
+│   ├── __init__.py
+│   ├── admin.py
+│   ├── apps.py
+│   ├── helper.py
+│   ├── models.py
+│   ├── pagination.py
+│   ├── serializers.py
+│   ├── signals.py
+│   ├── tasks.py
+│   ├── tests.py
+│   ├── urls.py
+│   └── views.py
+├── project_structure.txt
+├── requirements.txt
+├── stackoverflow
+│   ├── __init__.py
+│   ├── asgi.py
+│   ├── celery.py
+│   ├── settings.py
+│   ├── urls.py
+│   └── wsgi.py
+└── users
+    ├── __init__.py
+    ├── admin.py
+    ├── apps.py
+    ├── backends
+    │   └── email_backend.py
+    ├── models.py
+    ├── pagination.py
+    ├── serializers.py
+    ├── signals.py
+    ├── tasks.py
+    ├── tests.py
+    ├── urls.py
+    └── views.py
+
+5 directories, 37 files
+

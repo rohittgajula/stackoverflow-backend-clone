@@ -47,7 +47,7 @@ class Comment(models.Model):
     comment_id = models.AutoField(primary_key=True)
     question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name='comments', null=True, blank=True)
     answer = models.ForeignKey(Answer, on_delete=models.CASCADE, related_name='comments', null=True, blank=True)
-    created_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='commants')
+    created_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='comments')
     comment_description = models.CharField(max_length=150, blank=False, null=False)
     created_at = models.DateTimeField(auto_now_add=True)
 

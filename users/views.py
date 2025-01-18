@@ -16,16 +16,24 @@ from django.db import transaction
 
 from drf_yasg.utils import swagger_auto_schema
 
+from django.contrib.auth import get_user_model
+
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def current_user(request):
-    user = request.user
-    serializer = UserSerializer(user)
-    return Response({
-        'status':200,
-        'user':serializer.data
-    }, status.HTTP_200_OK)
+    try:
+        user = request.user
+        serializer = UserSerializer(user)
+        return Response({
+            'status':200,
+            'user':serializer.data
+        }, status.HTTP_200_OK)
+    except Exception as e:
+        return Response({
+            'status':500,
+            'error':str(e)
+        })
     
 
 @api_view(['GET'])
@@ -77,15 +85,31 @@ def verify_otp(request):
     data = request.data
     user = request.user
 
+    print(f"OTP in the database for {user.email}: {user.otp}")
+
+    if user is None:
+        return Response({
+            'status': 401,
+            'error': 'User not authenticated. Please log in first.'
+        }, status=status.HTTP_401_UNAUTHORIZED)
+
     serializer = VerifyEmailSerializer(data=data)
     if serializer.is_valid():
-        print("User OTP:", user.otp)
-        print("Serializer OTP:", serializer.data['otp'])
-        if user.otp != serializer.data['otp']:
+        provided_otp = serializer.validated_data['otp']
+        stored_otp = user.otp
+
+        print(f'Provided OTP : {provided_otp}, Stored OTP : {stored_otp}')
+        if stored_otp is None:
             return Response({
                 'status':400,
-                'error':'Wrong otp.'
-            }, status.HTTP_400_BAD_REQUEST)
+                'error':'No OTP found for user, please request another OTP'
+            })
+        
+        if stored_otp != provided_otp:
+            return Response({
+                'status':400,
+                'error':'Wrong OTP'
+            })
         else:
             user.is_verified = True
             user.save()

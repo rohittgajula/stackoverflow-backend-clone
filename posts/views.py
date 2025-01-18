@@ -17,7 +17,6 @@ from .tasks import send_answer_notification_mail
 from .helper import handle_not_found
 
 from django.core.cache import cache
-from django.views.decorators.csrf import csrf_exempt
 
 import hashlib
 

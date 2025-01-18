@@ -1,11 +1,12 @@
 {
-    "cSpell.words": [
-        "dotenv",
-        "makemigrations",
-        "redoc",
-        "runserver",
-        "simplejwt",
-        "Stackoverflow",
-        "yasg"
-    ]
+  "cSpell.words": [
+    "csvfile",
+    "dotenv",
+    "makemigrations",
+    "redoc",
+    "runserver",
+    "simplejwt",
+    "Stackoverflow",
+    "yasg"
+  ]
 }

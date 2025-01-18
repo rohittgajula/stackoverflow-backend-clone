@@ -9,7 +9,7 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class VerifyEmailSerializer(serializers.Serializer):
-    otp = serializers.CharField()
+    otp = serializers.CharField(max_length=6, required=True)
 
 class CreateUpdateSerializer(serializers.ModelSerializer):
     class Meta:
