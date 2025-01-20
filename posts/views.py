@@ -25,6 +25,51 @@ from drf_yasg.utils import swagger_auto_schema
 from .documents import QuestionDocument
 from django_elasticsearch_dsl.search import Search
 
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def all_question(request):
+    search_query = request.GET.get('search', None)      # get search parameters
+    cached_questions = cache.get('all_questions')
+
+    if search_query:
+        search = QuestionDocument.search()
+        search = search.query("multi_match",
+                              query=search_query,
+                              fields = ["question_title", "question_description"])
+        search = search[:100]
+        search_result = search.execute()
+
+        # serialize search result
+        questions = []
+        for hit in search_result:
+            question = {
+                "id": hit.meta.id,
+                "question_title":hit.question_title,
+                "question_description":hit.question_description,
+            }
+            questions.append(question)
+
+        cache_key = f'search_results_{search_query}'
+        cache.set(cache_key, questions, timeout=600)
+        data = questions
+
+    elif not cached_questions:
+        questions = Question.objects.all().order_by('created_at')
+        serializer = AllQuestionsSerializer(questions, many=True)
+        cache.set('all_questions', serializer.data, timeout=600)
+        data = serializer.data
+    else:
+        data = cached_questions
+
+    paginator = CustomPagination()
+    result_page = paginator.paginate_queryset(data, request)
+    return paginator.get_paginated_response({
+        'status':status.HTTP_200_OK,
+        'message':'All questions' if not search_query else f'Search result for "{search_query}"',
+        'data':result_page
+    })
+
+
 @swagger_auto_schema(method='POST', request_body=CreateAnswerSerializer)
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
@@ -141,51 +186,6 @@ def delete_answer(request, answer_id):
         'message':f'Answer deleted with id {answer_id}'
     }, status.HTTP_200_OK)
 
-
-
-@api_view(['GET'])
-@permission_classes([AllowAny])
-def all_question(request):
-    search_query = request.GET.get('search', None)      # get search parameters
-    cached_questions = cache.get('all_questions')
-
-    if search_query:
-        search = QuestionDocument.search()
-        search = search.query("multi_match",
-                              query=search_query,
-                              fields = ["question_title", "question_description"])
-        search = search[:100]
-        search_result = search.execute()
-
-        # serialize search result
-        questions = []
-        for hit in search_result:
-            question = {
-                "id": hit.meta.id,
-                "question_title":hit.question_title,
-                "question_description":hit.question_description,
-            }
-            questions.append(question)
-
-        cache_key = f'search_results_{search_query}'
-        cache.set(cache_key, questions, timeout=600)
-        data = questions
-
-    elif not cached_questions:
-        questions = Question.objects.all().order_by('created_at')
-        serializer = AllQuestionsSerializer(questions, many=True)
-        cache.set('all_questions', serializer.data, timeout=600)
-        data = serializer.data
-    else:
-        data = cached_questions
-
-    paginator = CustomPagination()
-    result_page = paginator.paginate_queryset(data, request)
-    return paginator.get_paginated_response({
-        'status':status.HTTP_200_OK,
-        'message':'All questions' if not search_query else f'Search result for "{search_query}"',
-        'data':result_page
-    })
 
 @api_view(['GET'])
 @permission_classes([AllowAny])
