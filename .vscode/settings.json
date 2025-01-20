@@ -5,10 +5,13 @@
     "healthcheck",
     "isready",
     "makemigrations",
+    "memlock",
     "redoc",
     "runserver",
     "simplejwt",
     "Stackoverflow",
+    "ulimits",
+    "xpack",
     "yasg"
   ]
 }

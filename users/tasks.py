@@ -31,6 +31,7 @@ def send_otp_via_mail(email):
 @shared_task
 def expire_otp_timer(email):
     try:
+        print(f'OTP expiration task started for {email}, expires in 10min.')
         user = User.objects.get(email=email)
     except User.DoesNotExist:
         print("User not found.")

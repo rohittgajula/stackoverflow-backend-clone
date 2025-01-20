@@ -50,6 +50,8 @@ INSTALLED_APPS = [
     "rest_framework_simplejwt",
     "posts",
     'drf_yasg',
+    'django_elasticsearch_dsl',
+    'django_elasticsearch_dsl_drf',
 ]
 
 
@@ -204,6 +206,22 @@ SWAGGER_SETTINGS = {
 CSRF_COOKIE_NAME = "csrftoken"
 
 
+# ELASTIC SEARCH
+
+ELASTICSEARCH_HOST={
+    'default': {
+        'hosts': 'http://elasticsearch:9200',
+        'verify_certs': False,
+    }
+}
+
+ELASTICSEARCH_DSL={
+    'default': {
+        'hosts': 'http://elasticsearch:9200',
+        'verify_certs': False,
+    }
+}
+
 
 def get_redis_cache_config():
 
@@ -230,3 +248,18 @@ def get_redis_cache_config():
     
 CACHES = get_redis_cache_config()
 
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'loggers': {
+        'django_elasticsearch_dsl': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+        },
+    },
+}

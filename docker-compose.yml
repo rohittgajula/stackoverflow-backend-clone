@@ -57,5 +57,26 @@ services:
              python3 manage.py migrate &&
              python3 manage.py runserver 0.0.0.0:8000"
 
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.10.1
+    container_name: elasticsearch
+    # platform: linux/arm64  # Specify the ARM platform
+    environment:
+      - discovery.type=single-node
+      - bootstrap.memory_lock=true
+      - xpack.security.enabled=false  # For local development only
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    volumes:
+      - es_data:/usr/share/elasticsearch/data
+
 volumes:
   postgres_data:
+  es_data:
+    driver: local
