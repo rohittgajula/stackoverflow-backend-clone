@@ -17,6 +17,7 @@ def send_otp_via_mail(email):
     message = f'Your verification otp is : {otp}, expires in 10min.'
     email_from = settings.EMAIL_HOST_USER
     try:
+        print(f"Sending email to {email} from {email_from}")
         send_mail(subject, message, email_from, [email])
 
         user_obj = User.objects.get(email=email)

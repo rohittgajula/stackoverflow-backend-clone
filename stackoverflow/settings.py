@@ -59,7 +59,7 @@ AUTH_USER_MODEL = 'users.User'
 
 CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
 
-CELERY_BROKER_URL = os.getenv('CELERY_BROKER_URL', 'redis://127.0.0.1:6379/0')
+CELERY_BROKER_URL = os.getenv('CELERY_BROKER_URL', 'redis://redis:6379/0')
 CELERY_RESULT_BACKEND = 'django-db'
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
@@ -131,8 +131,8 @@ WSGI_APPLICATION = 'stackoverflow.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-def get_database_host():
-    return 'db' if os.getenv('IS_DOCKER', 'false').lower() == 'true' else '127.0.0.1'
+# def get_database_host():
+#     return 'db' if os.getenv('IS_DOCKER', 'false').lower() == 'true' else '127.0.0.1'
 
 DATABASES = {
     'default': {
@@ -140,7 +140,7 @@ DATABASES = {
         'NAME': os.getenv('POSTGRES_DB', 'stackoverflow'),
         'USER': os.getenv('POSTGRES_USER', 'postgres'),
         'PASSWORD': os.getenv('POSTGRES_PASSWORD', '2710'),
-        'HOST': get_database_host(),     # use 'db' when running on docker & '127.0.0.1' for local server
+        'HOST': os.getenv('POSTGRES_HOST', 'db'),     # use 'db' when running on docker & '127.0.0.1' for local server
         'PORT': os.getenv('POSTGRES_PORT', '5432'),
     }
 }
