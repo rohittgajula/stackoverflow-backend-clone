@@ -10,6 +10,8 @@ from rest_framework_simplejwt.views import (
     TokenRefreshView,
 )
 
+from django_prometheus import exports
+
 schema_view = get_schema_view(
    openapi.Info(
       title="Stackoverflow clone",
@@ -30,4 +32,6 @@ urlpatterns = [
 
     path('', schema_view.with_ui('swagger'), name='schema-swagger-ui'),
     path('redoc/', schema_view.with_ui('redoc'), name='schema-redoc'),
+
+    path('', include('django_prometheus.urls')),
 ]

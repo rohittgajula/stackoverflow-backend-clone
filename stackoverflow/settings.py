@@ -31,7 +31,7 @@ SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-9^fcwjpr00ps5_cbws&ap@pcj1
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG', 'False')
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'web']
 
 CORS_ALLOW_ALL_ORIGINS = True
 
@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'drf_yasg',
     'django_elasticsearch_dsl',
     'django_elasticsearch_dsl_drf',
+    'django_prometheus',
 ]
 
 
@@ -100,6 +101,7 @@ SIMPLE_JWT = {
 # --------------------------------------------------------------------------------------------------
 
 MIDDLEWARE = [
+    'django_prometheus.middleware.PrometheusBeforeMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -107,6 +109,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django_prometheus.middleware.PrometheusAfterMiddleware',
 ]
 
 ROOT_URLCONF = 'stackoverflow.urls'
@@ -257,9 +260,9 @@ LOGGING = {
         },
     },
     'loggers': {
-        'django_elasticsearch_dsl': {
+        'django_prometheus': {
             'handlers': ['console'],
-            'level': 'DEBUG',
+            'level': 'DEBUG',  # Change this to DEBUG for more verbose output
         },
     },
 }
