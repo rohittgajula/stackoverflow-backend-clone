@@ -1,0 +1,12 @@
+# postgres_exporter.yml
+
+databases:
+  - "stackoverflow"
+
+pgx:
+  host: "db"
+  port: 5432
+  sslmode: "disable"
+
+global:
+  scrape_interval: 15s

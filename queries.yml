@@ -1,0 +1,13 @@
+# queries.yml
+
+queries:
+  - name: pg_stat_bgwriter
+    query: |
+      SELECT 
+        coalesce(buffers_clean, 0) as buffers_clean,
+        coalesce(maxwritten_clean, 0) as maxwritten_clean,
+        coalesce(buffers_alloc, 0) as buffers_alloc,
+        coalesce(stats_reset, NOW()) as stats_reset
+      FROM pg_stat_bgwriter
+
+      
