@@ -5,6 +5,8 @@ from rest_framework import permissions
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 
+from django_prometheus import exports
+
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
@@ -34,4 +36,5 @@ urlpatterns = [
     path('redoc/', schema_view.with_ui('redoc'), name='schema-redoc'),
 
     path('', include('django_prometheus.urls')),
+    path('metrics/', exports.ExportToDjangoView, name='prometheus-django-metrics'),
 ]
