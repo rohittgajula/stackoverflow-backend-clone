@@ -231,7 +231,7 @@ def get_redis_cache_config():
     if os.getenv('IS_DOCKER') == 'true':
         return {
             'default': {
-                'BACKEND': 'django_redis.cache.RedisCache',
+                'BACKEND': 'django_prometheus.cache.backends.redis.RedisCache',
                 'LOCATION': 'redis://redis:6379/0',  # Redis container name is 'redis' in Docker
                 'OPTIONS': {
                     'CLIENT_CLASS': 'django_redis.client.DefaultClient',
@@ -241,7 +241,7 @@ def get_redis_cache_config():
     else:
         return {
             'default': {
-                'BACKEND': 'django_redis.cache.RedisCache',
+                'BACKEND': 'django_prometheus.cache.backends.redis.RedisCache',
                 'LOCATION': 'redis://127.0.0.1:6379/0',  # Localhost Redis
                 'OPTIONS': {
                     'CLIENT_CLASS': 'django_redis.client.DefaultClient',
